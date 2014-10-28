@@ -1,39 +1,29 @@
 package uk.gov.dwp.maze;
 
-import java.io.File;
-import java.util.LinkedList;
-import java.util.List;
-
 public class Maze extends MazeFactory {
 
     private Square[][] maze;
     private boolean[][] mazeExplored;
-    private List<String> history = new LinkedList<String>();
     private Path path;
     private int height;
     private int width;
 
-    public Maze(final String filePath) {
-        try {
-            File file = new File(filePath);
-            this.maze = MazeFactory.buildMazeMap(file);
-            this.path = new Path();
-            this.mazeExplored = new boolean[maze.length][maze[0].length];
-            if (maze != null) { // npe safe
-                this.height = maze.length;
-                this.width = maze[0].length;
-            }
-        } catch (Exception s) {
-            s.printStackTrace();
-        }
+    public Maze(final Square[][] maze) {
+        if (maze == null)
+            throw new IllegalArgumentException("Cannot have null map in Maze");
+        this.maze = maze;
+        this.path = new Path();
+        this.height = maze.length;
+        this.width = maze[0].length;
+        this.mazeExplored = new boolean[height][width];
     }
 
-    public List<String> getHistory() {
-        return history;
-    }
-
-    public Square getPreviousExplored() {
-        return path.getPreviousExploredSquare();
+    /**
+     * Get the path of the very final route.
+     * @return the Path stack that leads to solution.
+     */
+    public Path getPath() {
+        return path;
     }
 
     /**
@@ -47,7 +37,6 @@ public class Maze extends MazeFactory {
         if (!validateCoordinates(x, y))
             throw new IllegalArgumentException("Coordinates x: " + x + ", y: " + y + " is not valid");
         mazeExplored[x][y] = visited;
-        history.add("" + x + ":" + y);
         path.addPath(maze[x][y]);
     }
 
@@ -64,14 +53,25 @@ public class Maze extends MazeFactory {
 
     /**
      * coordinates start from 0 ...
-     * @param x
-     * @param y
-     * @return
+     * @param x the row
+     * @param y the column
+     * @return the square located at the specific x and y coordinate.
      */
     public Square getSquare(final int x, final int y) {
         if (!validateCoordinates(x, y))
             return null;
         return maze[x][y];
+    }
+
+    public Square getStartSquare() {
+        for (int i = 0 ; i < getHeight(); i ++) {
+            for (int j = 0; j < getWidth(); j++) {
+                Square s = getSquare(i, j);
+                if (s.isStart())
+                    return s;
+            }
+        }
+        return null;
     }
 
     public int getHeight() {
@@ -138,13 +138,6 @@ public class Maze extends MazeFactory {
             }
             result.append('\n');
         }
-        sleep(100);
         return result.toString();
-    }
-
-    private void sleep(int ms) {
-        try {
-            Thread.sleep(ms);
-        } catch (InterruptedException ie) {}
     }
 }

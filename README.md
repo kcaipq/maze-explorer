@@ -8,3 +8,5 @@
 2) assume robot can only move through spaces " " within the maze
 3) the explorer should search for a path from the starting position "S" to the "F" position until it finds one or until it exhausts all possibilities. 
 In addition, it should mark the path it finds (if any) in the maze.
+4) assume the maze map is sealed completed in a way that no empty spaces are allowed in each edge of the maze map.
+5) assume the explorer will randomly select an open route to proceed if there were more than one adjacent empty spaces to current square/cell.

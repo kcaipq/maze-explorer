@@ -1,7 +1,7 @@
 package uk.gov.dwp.maze;
 
 /**
- * Created by Kcai on 27/10/2014.
+ * Created by Kcai on 28/10/2014.
  */
 public class Square {
 
@@ -55,5 +55,26 @@ public class Square {
 
     public String toString() {
         return "(" + row + ", " + column + ", " + state + ")";
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Square square = (Square) o;
+
+        if (column != square.column) return false;
+        if (row != square.row) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = row;
+        result = 31 * result + column;
+        result = 31 * result + (state != null ? state.hashCode() : 0);
+        return result;
     }
 }

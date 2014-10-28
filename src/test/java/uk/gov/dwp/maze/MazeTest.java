@@ -2,10 +2,16 @@ package uk.gov.dwp.maze;
 
 import junit.framework.Assert;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
+import static org.junit.Assert.*;
+import static org.hamcrest.Matchers.*;
+
+
 
 /**
- * Created by User on 27/10/2014.
+ * Created by Kcai on 28/10/2014.
  */
 public class MazeTest {
 
@@ -13,16 +19,22 @@ public class MazeTest {
 
     @Before
     public void before() {
-        this.maze = new Maze("src/test/resources/maze.txt");
+        this.maze = new FileMazeBuilder("src/test/resources/maze.txt").build();
+    }
+
+    @Test
+    public void testMazeNullValueShouldThrowException() {
+        try {
+            this.maze = new FileMazeBuilder("NOT_EXIST").build();
+        } catch (IllegalArgumentException s) {
+            assertThat(s.getMessage(), containsString("Cannot have null map in Maze"));
+        }
     }
 
     @Test
     public void testMazeNullSafety() {
-        this.maze = new Maze("src/test/resources/maze");
         Assert.assertNotNull(maze);
-        Assert.assertNull(maze.getSquare());
-        Assert.assertEquals(0, maze.getHeight());
-        Assert.assertEquals(0, maze.getWidth());
+        Assert.assertNotNull(maze.getSquare());
     }
 
     @Test

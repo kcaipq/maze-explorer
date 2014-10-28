@@ -10,11 +10,11 @@ import java.io.IOException;
  */
 public class MazeFactory {
 
-    public static Square[][] buildMazeMap(File inputFile) {
-        if (inputFile == null || !inputFile.exists())
-            throw new IllegalArgumentException("Invalid input file - file input cannot be null");
+    public static Square[][] buildMazeMapFromString(String inputString) {
+        if (inputString == null)
+            return null;
 
-        String[] lines = readLine(inputFile).split("[\r]?\n");
+        String[] lines = inputString.split("[\r]?\n");
         int height = lines.length;
         int width = lines[0].length();
         int startCount = 0;
@@ -42,6 +42,12 @@ public class MazeFactory {
             throw new IllegalArgumentException("Invalid map data - should have one and only one Start point 'S' and one and only one exit 'F'");
 
         return squares;
+    }
+
+    public static Square[][] buildMazeMap(File inputFile) {
+        if (inputFile == null || !inputFile.exists())
+            throw new IllegalArgumentException("Invalid input file - file input cannot be null");
+       return buildMazeMapFromString(readLine(inputFile));
     }
 
     private static String readLine(File inputFile) {
